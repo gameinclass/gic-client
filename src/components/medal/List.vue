@@ -60,8 +60,13 @@
     },
     methods: {
       getMedals() {
-        this.waiting = true;
         this.$auth.$http.get('/medal', {
+          transformRequest: [
+            (data, headers) => {
+              this.waiting = true;
+              return data;
+            },
+          ],
           params: { page: this.page }
         })
           .then((response) => {

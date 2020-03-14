@@ -112,6 +112,20 @@
       box-shadow: 0 -25px 0 0 black;
     }
 
+    &:after {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black {
+
+      };
+      content: '';
+      position: absolute;
+      z-index: -1;
+      opacity: .2;
+    }
+
     .brand {
       width: 70px;
     }

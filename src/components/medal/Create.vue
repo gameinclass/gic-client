@@ -1,20 +1,20 @@
 <template>
   <div>
-    <div class="card" v-show="!creating">
+    <div class="card fade-in" v-show="!creating">
       <div class="card-body">
-        <button class="btn btn-lg btn-outline-primary slide-bottom"
+        <button class="btn btn-lg btn-outline-primary"
                 @click="toggle"
         >
           MEDALHA +1
         </button>
       </div>
     </div>
-    <div class="card slide-bottom" v-show="creating">
+    <div class="card fade-in" v-show="creating">
       <div class="card-body">
         <form>
           <div class="input-group">
             <div class="input-group-text">Título</div>
-            <input class="form-control" placeholder="O título do jogo"
+            <input class="form-control" placeholder="O título da medalha"
                    v-bind:disabled="disabled"
                    v-bind:class="{'is-invalid': errors.title}"
                    v-model="medal.title"
@@ -25,7 +25,7 @@
           </div>
           <div class="input-group">
             <div class="input-group-text">Descrição</div>
-            <input class="form-control" placeholder="A descrição do jogo"
+            <input class="form-control" placeholder="A descrição da medalha "
                    v-bind:disabled="disabled"
                    v-bind:class="{'is-invalid': errors.description}"
                    v-model="medal.description"
@@ -106,6 +106,7 @@
             description: false,
             image: false
           };
+          this.preview = false;
         }
         this.creating = !this.creating;
       },
@@ -119,13 +120,17 @@
         this.file = file[0];
       },
       storeMedal() {
-        this.disabled = this.waiting = true;
-        // Converte os dados para o formato multipart/form-data
         const _formData = new FormData();
         _formData.append('title', this.medal.title);
         _formData.append('description', this.medal.description);
         _formData.append('image', this.file);
         this.$auth.$http.post('medal', _formData, {
+          transformRequest: [
+            (data, headers) => {
+              this.disabled = this.waiting = true;
+              return data;
+            },
+          ],
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -149,10 +154,11 @@
             }
           })
           .catch((error) => {
-            const response = error.response;
-            if (response.data) {
-              if (response.status === 422 && response.data.errors) {
-                this.errors = error.response.data.errors;
+            const { response } = error;
+            const { data } = response;
+            if (data) {
+              if (response.status === 422 && data.errors) {
+                this.errors = data.errors;
               }
             }
           })
@@ -174,18 +180,7 @@
   @import "~bootstrap/scss/forms";
   @import "~bootstrap/scss/utilities/spacing";
 
-  @keyframes slide-bottom {
-    0% {
-      transform: translateY(-10px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-
-  .slide-bottom {
-    animation: slide-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-  }
+  @import "../../assets/styles/animations";
 
   .card {
     background-color: #000000;
@@ -193,23 +188,27 @@
   }
 
   .dropbox {
-    margin-top: 10px;
-    outline: 2px dashed white;
+    margin-top: 20px;
     outline-offset: -10px;
-    background: $input-bg;
+    background: $input-bg {
+      image: url("../../assets/svg/upload.svg");
+      size: 20%;
+      repeat: no-repeat;
+      position: center;
+    };
     border-radius: $border-radius;
-    color: dimgray;
     padding: 10px 10px;
     min-height: 100px;
     position: relative;
     cursor: pointer;
+    transition: background-color 200ms ease-in-out;
 
     &:hover {
-      background: darken($input-bg, 10%);
+      background-color: darken($input-bg, 10%);
     }
 
     .input-file {
-      opacity: 0; /* invisible but it's there! */
+      opacity: 0;
       width: 100%;
       height: 100%;
       position: absolute;
@@ -218,6 +217,7 @@
 
     .preview {
       width: 100%;
+      display: inline-block;
     }
   }
 

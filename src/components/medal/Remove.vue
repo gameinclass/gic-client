@@ -49,8 +49,14 @@
         this.remove = !this.remove;
       },
       destroy() {
-        this.waiting = this.disabled = true;
-        this.$auth.$http.delete(`medal/${this.medalId}`)
+        this.$auth.$http.delete(`medal/${this.medalId}`, {
+          transformRequest: [
+            (data, headers) => {
+              this.waiting = this.disabled = true;
+              return data;
+            },
+          ],
+        })
           .then((response) => {
             this.$store.commit('deleteMedalsById', this.medalId);
           })
