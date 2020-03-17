@@ -50,9 +50,8 @@ export default new Vuex.Store({
       state.medals.splice(0, 0, medal);
     },
     deleteMedalsById(state, medalId) {
-      let index = state.medals.findIndex(medal => medal.id === medalId + 5000000000);
-      console.log(index);
-      if (index) {
+      let index = state.medals.findIndex(medal => medal.id === medalId);
+      if (index !== -1) {
         state.medals.splice(index, 1);
       }
     },
