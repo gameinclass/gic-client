@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
+import gameModule from './game';
 
 Vue.use(Vuex);
 
@@ -37,10 +38,6 @@ export default new Vuex.Store({
     user(state, user) {
       state.user = user;
     },
-    // Games
-    games(state, games) {
-      state.games = games;
-    },
     // Medals
     medals(state, medals) {
       state.medals = medals;
@@ -64,6 +61,8 @@ export default new Vuex.Store({
         });
     }
   },
-  modules: {},
+  modules: {
+    game: gameModule,
+  },
   plugins: [vuexLocalStorage.plugin],
 });

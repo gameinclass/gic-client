@@ -71,24 +71,20 @@
         })
           .then((response) => {
             let medals = [];
-
             if (response.data) {
               if (response.data.data) {
                 medals = response.data.data;
               }
             }
-
             for (let prop in medals) {
               if (medals.hasOwnProperty(prop)) {
                 this.medals.push(medals[prop]);
               }
             }
-
             this.$store.commit('medals', medals);
-
             this.page++;
           })
-          .catch((error) => {
+          .catch(error => {
           })
           .finally(() => {
             this.waiting = false;

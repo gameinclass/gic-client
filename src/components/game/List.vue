@@ -1,61 +1,62 @@
 <template>
-  <div class="row">
-    <div class="col-12 col-md-6 col-lg-4 mb-5">
-      <create/>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 mb-5" v-for="game in games" v-bind:key="game.id">
-      <router-link v-bind:to="{name: 'game.item', params: { game: game.id } }">
-        <div class="card mb-4 slide-bottom">
-          <div class="card-header">
-            <h4 class="title">{{game.title}}</h4>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
-                   title="Quantidade de jogadore(s) neste jogo">
-                <div class="numbers">
-                  <span class="gg-boy"></span>
-                  <span class="number">{{game.players}}</span>
+  <div>
+    <pacman v-if="waiting"/>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4 mb-5">
+        <create/>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-5" v-for="game in games" v-bind:key="game.id">
+        <router-link v-bind:to="{name: 'game.item', params: { game: game.id } }">
+          <div class="card mb-4 slide-bottom">
+            <div class="card-header">
+              <h4 class="title">{{game.title}}</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
+                     title="Quantidade de jogadore(s) neste jogo">
+                  <div class="numbers">
+                    <span class="gg-boy"></span>
+                    <span class="number">{{game.players}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
-                   title="Quantidade de medalha(s) neste jogo">
-                <div class="numbers">
-                  <span class="gg-flag"></span>
-                  <span class="number">{{game.medals}}</span>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
+                     title="Quantidade de medalha(s) neste jogo">
+                  <div class="numbers">
+                    <span class="gg-flag"></span>
+                    <span class="number">{{game.medals}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
-                   title="Quantidade de fase(s) neste jogo">
-                <div class="numbers">
-                  <span class="gg-border-style-dashed"></span>
-                  <span class="number">{{game.phases}}</span>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
+                     title="Quantidade de fase(s) neste jogo">
+                  <div class="numbers">
+                    <span class="gg-border-style-dashed"></span>
+                    <span class="number">{{game.phases}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
-                   title="Quantidade de ponto(s) neste jogo">
-                <div class="numbers">
-                  <span class="gg-add"></span>
-                  <span class="number">{{game.points}}</span>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-4 mb-2"
+                     title="Quantidade de ponto(s) neste jogo">
+                  <div class="numbers">
+                    <span class="gg-add"></span>
+                    <span class="number">{{game.points}}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </router-link>
+      </div>
+      <div class="col-12">
+        <!-- Load -->
+        <div class="mt-5">
+          <button class="btn btn-lg btn-outline-primary"
+                  v-bind:disabled="waiting"
+                  v-if="page > 1"
+                  @click="getGames"
+          >
+            {{waiting ? 'Carregando...' : 'Carregar +'}}
+          </button>
         </div>
-      </router-link>
-    </div>
-    <div class="col-12">
-      <!-- Pacman -->
-      <Pacman v-if="waiting"/>
-      <!-- Load -->
-      <div class="mt-5">
-        <button class="btn btn-lg btn-outline-primary"
-                v-bind:disabled="waiting"
-                v-if="page > 1"
-                @click="getGames"
-        >
-          {{waiting ? 'Carregando...' : 'Carregar +'}}
-        </button>
       </div>
     </div>
   </div>
@@ -72,37 +73,44 @@
       return {
         waiting: false,
         page: 1,
-        games: []
       };
     },
     methods: {
       getGames() {
-        this.waiting = true;
         this.$auth.$http.get('/game', {
+          transformRequest: [
+            (data, headers) => {
+              this.waiting = true;
+              return data;
+            },
+          ],
           params: { page: this.page }
         })
-          .then((response) => {
+          .then(response => {
             let games = [];
-
             if (response.data) {
               if (response.data.data) {
                 games = response.data.data;
               }
             }
-
             for (let prop in games) {
               if (games.hasOwnProperty(prop)) {
                 this.games.push(games[prop]);
               }
             }
-
+            this.$store.commit('games', games);
             this.page++;
           })
-          .catch((error) => {
+          .catch(error => {
           })
           .finally(() => {
             this.waiting = false;
           });
+      }
+    },
+    computed: {
+      games() {
+        return this.$store.state.game.games;
       }
     },
     mounted() {
@@ -120,20 +128,13 @@
   @import "~bootstrap/scss/card";
   @import "~bootstrap/scss/buttons";
   @import "~bootstrap/scss/utilities/spacing";
+  // Animations
+  @import "../../assets/styles/animations";
   // Icons
   @import "~css.gg/icons/add.css";
   @import "~css.gg/icons/boy.css";
   @import "~css.gg/icons/border-style-dashed.css";
   @import "~css.gg/icons/flag.css";
-  // Animations
-  @keyframes slide-bottom {
-    0% {
-      transform: translateY(-10px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
 
   .title {
     background: black;
@@ -156,10 +157,6 @@
     .gg-flag {
       display: inline-block;
     }
-  }
-
-  .slide-bottom {
-    animation: slide-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
   }
 
   .card {
