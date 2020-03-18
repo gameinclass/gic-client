@@ -18,7 +18,6 @@ function initialState() {
     isOffline: false,
     user: {},
     isAuthenticated: false,
-    games: [],
     medals: []
   };
 }
