@@ -10,7 +10,7 @@
            v-bind:key="medal.id"
       >
         <router-link v-bind:to="{name: 'medal.item', params: { medal: medal.id } }">
-          <div class="card mb-4 fade-in">
+          <div class="card mb-4 slide-bottom">
             <div class="card-header">
               <img class="image"
                    v-bind:src="medal.url"
