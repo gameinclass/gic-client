@@ -25,22 +25,29 @@ function initialState() {
 
 export default new Vuex.Store({
   state: initialState,
-  getters: {
-    findMedalsById: state => id => {
-      return state.medals.find(medal => medal.id === id);
-    },
-  },
+  getters: {},
   mutations: {
+    /**
+     *
+     * @param state
+     * @param payload
+     */
     isAuthenticated(state, payload) {
       state.isAuthenticated = payload;
     },
-    // User
+    /**
+     *
+     * @param state
+     * @param user
+     */
     user(state, user) {
       state.user = user;
     },
-    // Reset
+    /**
+     *
+     * @param state
+     */
     reset(state) {
-      // acquire initial state
       const s = initialState();
       Object.keys(s)
         .forEach(key => {
