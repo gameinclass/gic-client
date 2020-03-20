@@ -93,7 +93,7 @@
     },
     computed: {
       medals() {
-        return this.$store.state.medals;
+        return this.$store.state.medal.medals;
       }
     },
     mounted() {

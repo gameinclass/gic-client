@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersist from 'vuex-persist';
 import gameModule from './game';
+import medalModule from './medal';
 
 Vue.use(Vuex);
 
@@ -19,7 +20,6 @@ function initialState() {
     isOffline: false,
     user: {},
     isAuthenticated: false,
-    medals: []
   };
 }
 
@@ -38,19 +38,6 @@ export default new Vuex.Store({
     user(state, user) {
       state.user = user;
     },
-    // Medals
-    medals(state, medals) {
-      state.medals = medals;
-    },
-    insertMedal(state, medal) {
-      state.medals.splice(0, 0, medal);
-    },
-    deleteMedalsById(state, medalId) {
-      let index = state.medals.findIndex(medal => medal.id === medalId);
-      if (index !== -1) {
-        state.medals.splice(index, 1);
-      }
-    },
     // Reset
     reset(state) {
       // acquire initial state
@@ -63,6 +50,7 @@ export default new Vuex.Store({
   },
   modules: {
     game: gameModule,
+    medal: medalModule,
   },
   plugins: [vuexLocalStorage.plugin],
 });

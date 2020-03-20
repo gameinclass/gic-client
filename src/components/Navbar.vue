@@ -78,12 +78,17 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../assets/styles/animations";
+  // Bootstrap
   @import "~bootstrap/scss/functions";
   @import "../assets/styles/variables";
   @import "~bootstrap/scss/variables";
   @import "~bootstrap/scss/mixins";
   @import "~bootstrap/scss/navbar";
+
+  // Animations
+  @import "../assets/styles/animations";
+
+  // Ícones
   @import "~css.gg/icons/boy.css";
   @import "~css.gg/icons/arrow-right-o.css";
 
@@ -117,9 +122,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: black {
-
-      };
+      background: black;
       content: '';
       position: absolute;
       z-index: -1;
