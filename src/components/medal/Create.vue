@@ -160,6 +160,15 @@
               if (response.status === 422 && data.errors) {
                 this.errors = data.errors;
               }
+
+              this.$buefy.toast.open({
+                type: 'is-danger',
+                message: data.message,
+                position: 'is-bottom-right',
+                duration: 3000,
+                queue: false
+              });
+              
             }
           })
           .finally(() => {
