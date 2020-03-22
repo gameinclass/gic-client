@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import multiguard from 'vue-router-multiguard';
-import Home from '../views/Home.vue';
 import store from '../store';
 
 Vue.use(VueRouter);
@@ -27,8 +26,8 @@ const canManage = (to, from, next) => {
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'home',
+    component: () => import(/* webpackChunkName: "home" */ '../views/Home'),
     beforeEnter: multiguard([ifAuthenticated, canManage]),
   },
   {
